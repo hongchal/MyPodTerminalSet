@@ -3,8 +3,8 @@ set -euo pipefail
 
 REPO_DIR="${REPO_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 SRC="${REPO_DIR}/config/bashrc.snippet"
-MARKER_BEGIN="# >>> MyTerminalSet bootstrap >>>"
-MARKER_END="# <<< MyTerminalSet bootstrap <<<"
+MARKER_BEGIN="# >>> MyPodTerminalSet bootstrap >>>"
+MARKER_END="# <<< MyPodTerminalSet bootstrap <<<"
 RC="${HOME}/.bashrc"
 
 touch "${RC}"

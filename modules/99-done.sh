@@ -4,7 +4,7 @@ set -euo pipefail
 cat << 'EOF'
 
 ────────────────────────────────────────
-✅ MyTerminalSet 부트스트랩 완료
+✅ MyPodTerminalSet 부트스트랩 완료
 
 다음 단계:
   1) 새 셸 열거나:  source ~/.bashrc

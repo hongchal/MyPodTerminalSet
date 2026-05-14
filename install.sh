@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
-# Remote installer for MyTerminalSet.
+# Remote installer for MyPodTerminalSet.
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/hongchal/MyTerminalSet/master/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/hongchal/MyPodTerminalSet/master/install.sh | bash
 #
 # Env overrides:
-#   MTS_REPO     — git URL (default: https://github.com/hongchal/MyTerminalSet.git)
+#   MTS_REPO     — git URL (default: https://github.com/hongchal/MyPodTerminalSet.git)
 #   MTS_BRANCH   — branch/ref (default: master)
-#   MTS_DEST     — clone destination (default: /DATA1/hongcheol/dotfiles, fallback: ~/MyTerminalSet)
+#   MTS_DEST     — clone destination (default: /DATA1/hongcheol/dotfiles, fallback: ~/MyPodTerminalSet)
 #   MTS_MODULES  — comma-separated module shortnames (default: all)
 
 set -euo pipefail
 
-REPO="${MTS_REPO:-https://github.com/hongchal/MyTerminalSet.git}"
+REPO="${MTS_REPO:-https://github.com/hongchal/MyPodTerminalSet.git}"
 BRANCH="${MTS_BRANCH:-master}"
 DEFAULT_DEST="/DATA1/hongcheol/dotfiles"
-FALLBACK_DEST="${HOME}/MyTerminalSet"
+FALLBACK_DEST="${HOME}/MyPodTerminalSet"
 DEST="${MTS_DEST:-${DEFAULT_DEST}}"
 MODULES="${MTS_MODULES:-all}"
 
