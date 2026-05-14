@@ -63,11 +63,16 @@ fi
 command -v direnv >/dev/null && eval "$(direnv hook bash)"
 
 # ── git-aware prompt ────────────────────────────────────
-[ -f "$HOME/.git-prompt.sh" ] && source "$HOME/.git-prompt.sh"
-export GIT_PS1_SHOWDIRTYSTATE=1
-export GIT_PS1_SHOWUNTRACKEDFILES=1
-export GIT_PS1_SHOWUPSTREAM="auto"
-PS1='\[\e[32m\]\u@\h\[\e[0m\]:\[\e[34m\]\w\[\e[33m\]$(__git_ps1 " (%s)" 2>/dev/null)\[\e[0m\]\$ '
+# Disable on slow / huge mounts: export MTS_NO_GIT_PROMPT=1
+if [ -z "${MTS_NO_GIT_PROMPT:-}" ] && [ -f "$HOME/.git-prompt.sh" ]; then
+  source "$HOME/.git-prompt.sh"
+  export GIT_PS1_SHOWDIRTYSTATE=1
+  export GIT_PS1_SHOWUNTRACKEDFILES=
+  export GIT_PS1_SHOWUPSTREAM="auto"
+  PS1='\[\e[32m\]\u@\h\[\e[0m\]:\[\e[34m\]\w\[\e[33m\]$(__git_ps1 " (%s)" 2>/dev/null)\[\e[0m\]\$ '
+else
+  PS1='\[\e[32m\]\u@\h\[\e[0m\]:\[\e[34m\]\w\[\e[0m\]\$ '
+fi
 
 # ── fzf ─────────────────────────────────────────────────
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash

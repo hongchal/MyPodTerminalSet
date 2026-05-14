@@ -9,11 +9,29 @@ RC="${HOME}/.bashrc"
 
 touch "${RC}"
 
-# 기존 블록이 있으면 제거 후 재적용 (idempotent update)
-if grep -qF "${MARKER_BEGIN}" "${RC}"; then
-  cp "${RC}" "${RC}.mts.bak.$(date +%Y%m%d-%H%M%S)"
-  sed -i "/$(printf '%s' "${MARKER_BEGIN}" | sed 's:[][\\/.^$*]:\\&:g')/,/$(printf '%s' "${MARKER_END}" | sed 's:[][\\/.^$*]:\\&:g')/d" "${RC}"
-  echo "bashrc 기존 스니펫 제거 (백업: ${RC}.mts.bak.*)"
+# 기존 블록 제거 — 현재 마커 + 옛날 마커(MyTerminalSet → MyPodTerminalSet 리네임 이전) 둘 다
+STAMP="$(date +%Y%m%d-%H%M%S)"
+NEEDS_BACKUP=0
+for begin in "${MARKER_BEGIN}" "# >>> MyTerminalSet bootstrap >>>"; do
+  end="$(echo "${begin}" | sed 's/>>>/<<</g' | sed 's/^# >>>/# <<</')"
+  if grep -qF "${begin}" "${RC}" 2>/dev/null; then
+    if [[ "${NEEDS_BACKUP}" -eq 0 ]]; then
+      cp "${RC}" "${RC}.mts.bak.${STAMP}"
+      echo "bashrc 백업: ${RC}.mts.bak.${STAMP}"
+      NEEDS_BACKUP=1
+    fi
+    sed -i "/$(printf '%s' "${begin}" | sed 's:[][\\/.^$*]:\\&:g')/,/$(printf '%s' "${end}" | sed 's:[][\\/.^$*]:\\&:g')/d" "${RC}"
+    echo "기존 블록 제거: ${begin}"
+  fi
+done
+
+# Docker 베이스 이미지의 .profile에 'exec /usr/bin/bash'가 있으면 Claude Code의 persistent
+# bash가 깨짐. CLAUDECODE env var이 set일 때만 skip하는 가드로 무력화.
+PROFILE="${HOME}/.profile"
+if [[ -f "${PROFILE}" ]] && grep -qE '^\[ -x /usr/bin/bash \] && exec /usr/bin/bash' "${PROFILE}"; then
+  cp "${PROFILE}" "${PROFILE}.mts.bak.${STAMP}"
+  sed -i 's|^\[ -x /usr/bin/bash \] && exec /usr/bin/bash|# MyPodTerminalSet: Claude Code의 persistent bash와 충돌 방지\n[ -z "${CLAUDECODE:-}" ] \&\& [ -x /usr/bin/bash ] \&\& exec /usr/bin/bash|' "${PROFILE}"
+  echo ".profile의 exec bash에 CLAUDECODE 가드 추가 (백업: ${PROFILE}.mts.bak.${STAMP})"
 fi
 
 {
