@@ -23,5 +23,26 @@
     "oh-my-claudecode@omc": true,
     "bkit@bkit-marketplace": true,
     "superskillret@thakicloud": true
-  }
+  },
+  "permissions": {
+    "allow": ["Bash(*)"],
+    "deny": [
+      "Bash(git reset:*)",
+      "Bash(git checkout:*)"
+    ],
+    "defaultMode": "auto"
+  },
+  "env": {
+    "ENABLE_PROMPT_CACHING_1H": "1"
+  },
+  "language": "Korean",
+  "advisorModel": "opus",
+  "includeGitInstructions": false,
+  "autoMemoryEnabled": false,
+  "autoCompactEnabled": false,
+  "skipDangerousModePermissionPrompt": true,
+  "skipAutoPermissionPrompt": true,
+  "theme": "auto",
+  "editorMode": "normal",
+  "preferredNotifChannel": "auto"
 }
