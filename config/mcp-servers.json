@@ -1,0 +1,4 @@
+{
+  "_comment": "MCP servers to install/declare on new pod. Plugin-bundled MCPs (OMC, bkit, superskillret) are handled by 26-claude-plugins. Add here only standalone MCPs (e.g., context7, custom notion, internal services). The 28-mcp-servers module reads this and prints install commands (or registers via 'claude mcp add' if available).",
+  "servers": {}
+}

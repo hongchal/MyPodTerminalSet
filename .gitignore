@@ -5,6 +5,8 @@
 !/modules/
 !/config/
 !/scripts/
+!/profile/
+!/vault/
 
 # Whitelisted root files
 !/.gitignore

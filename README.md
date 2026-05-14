@@ -47,8 +47,11 @@ tmux new -s work
 | `10-node.sh` | Node.js 20 (NodeSource) |
 | `20-claude.sh` | `@anthropic-ai/claude-code` CLI |
 | `25-claude-sync.sh` | `~/.claude` ↔ `/DATA1/hongcheol/.claude` 안전 마이그레이션 + symlink |
-| `26-claude-plugins.sh` | `~/.claude/settings.json`에 마켓플레이스(omc, bkit, thakicloud) + 플러그인 enable 선언 → 첫 `claude` 실행 시 자동 fetch |
+| `26-claude-plugins.sh` | `~/.claude/settings.json`에 마켓플레이스(omc, bkit, thakicloud) + 플러그인 enable + 권한/언어/env 선언. 첫 `claude` 실행 시 플러그인 자동 fetch |
+| `28-mcp-servers.sh` | `config/mcp-servers.json` 매니페스트의 standalone MCP 서버 등록 (플러그인 번들 MCP는 26이 처리) |
 | `30-cli-tools.sh` | tmux, ripgrep, bat, fd, htop, ncdu, tree, gh, lazygit, delta, direnv (jq는 00-base에서) |
+| `55-claude-profile.sh` | `profile/{agents,commands,skills}/` → `~/.claude/{agents,commands,skills}/` symlink deploy (사용자 커스텀 보관) |
+| `56-claude-vault.sh` | `vault/rules/*.md` → `~/.claude/CLAUDE.user.md` 빌드. OMC의 글로벌 CLAUDE.md와 분리 |
 | `35-fzf.sh` | fzf (git 설치, 최신 버전) |
 | `40-python.sh` | uv, nvitop, ipython |
 | `50-bash.sh` | `~/.bashrc` 추가 (history, alias, prompt with git, fzf) |
