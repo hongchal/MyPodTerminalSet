@@ -1,0 +1,27 @@
+# MyTerminalSet — git include snippet
+# Loaded via [include] path from ~/.gitconfig
+
+[alias]
+    s = status -sb
+    co = checkout
+    cb = checkout -b
+    br = branch -vv
+    ci = commit
+    cm = commit -m
+    amend = commit --amend --no-edit
+    last = log -1 HEAD --stat
+    lg = log --oneline --graph --decorate --all -30
+    sync = !git fetch --all --prune && git pull --rebase
+    unstage = reset HEAD --
+
+[push]
+    autoSetupRemote = true
+
+[pull]
+    rebase = true
+
+[init]
+    defaultBranch = main
+
+[diff]
+    colorMoved = default

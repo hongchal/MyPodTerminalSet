@@ -1,0 +1,25 @@
+# Whitelist mode — ignore everything by default
+/*
+
+# Whitelisted directories
+!/modules/
+!/config/
+!/scripts/
+
+# Whitelisted root files
+!/.gitignore
+!/README.md
+!/bootstrap.sh
+
+# Inside whitelisted dirs
+**/node_modules/
+**/__pycache__/
+
+# OS junk
+.DS_Store
+**/.DS_Store
+
+# Local state markers (never push)
+.pod_bootstrap_done
+*.log
+*.tmp

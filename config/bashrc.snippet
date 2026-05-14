@@ -1,0 +1,66 @@
+# ── History ──────────────────────────────────────────────
+export HISTSIZE=100000
+export HISTFILESIZE=200000
+export HISTCONTROL=ignoreboth:erasedups
+export HISTTIMEFORMAT="%F %T  "
+shopt -s histappend checkwinsize globstar 2>/dev/null
+PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND:-}"
+
+# ── PATH ─────────────────────────────────────────────────
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# ── Aliases ──────────────────────────────────────────────
+alias ll='ls -lah --color=auto'
+alias la='ls -A --color=auto'
+alias l='ls -CF --color=auto'
+alias grep='grep --color=auto'
+alias ..='cd ..'
+alias ...='cd ../..'
+
+alias gs='git status -sb'
+alias gd='git diff'
+alias gds='git diff --staged'
+alias ga='git add'
+alias gl='git log --oneline --graph --decorate --all -30'
+alias gb='git branch -vv'
+alias gco='git checkout'
+alias lg='lazygit'
+
+alias tn='tmux new -A -s'
+alias ta='tmux attach -t'
+alias tl='tmux ls'
+
+# ── GitHub 계정 분리 ─────────────────────────────────────
+# Pod 환경에선 GITHUB_TOKEN env가 잡혀 있지 않은 게 정상이지만,
+# 혹시 어디서 export 되더라도 충돌 방지 헬퍼 둠.
+gh-push-hongchal() {
+  ( unset GITHUB_TOKEN GH_TOKEN GITHUB_USERNAME
+    gh auth switch -u hongchal >/dev/null 2>&1 || true
+    git push "$@" )
+}
+gh-push-thakicloud() {
+  ( unset GITHUB_TOKEN GH_TOKEN GITHUB_USERNAME
+    gh auth switch -u chohongcheol-thakicloud >/dev/null 2>&1 || true
+    git push "$@" )
+}
+
+# ── secrets-status ──────────────────────────────────────
+# 부트스트랩 repo 경로 가정 (없으면 alias 무시)
+if [ -f /DATA1/hongcheol/dotfiles/scripts/secrets-status.sh ]; then
+  alias secrets-status='bash /DATA1/hongcheol/dotfiles/scripts/secrets-status.sh'
+fi
+
+# ── direnv ──────────────────────────────────────────────
+command -v direnv >/dev/null && eval "$(direnv hook bash)"
+
+# ── git-aware prompt ────────────────────────────────────
+[ -f "$HOME/.git-prompt.sh" ] && source "$HOME/.git-prompt.sh"
+export GIT_PS1_SHOWDIRTYSTATE=1
+export GIT_PS1_SHOWUNTRACKEDFILES=1
+export GIT_PS1_SHOWUPSTREAM="auto"
+PS1='\[\e[32m\]\u@\h\[\e[0m\]:\[\e[34m\]\w\[\e[33m\]$(__git_ps1 " (%s)" 2>/dev/null)\[\e[0m\]\$ '
+
+# ── fzf ─────────────────────────────────────────────────
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
