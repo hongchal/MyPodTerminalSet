@@ -1,0 +1,27 @@
+{
+  "extraKnownMarketplaces": {
+    "omc": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/Yeachan-Heo/oh-my-claudecode.git"
+      }
+    },
+    "bkit-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "popup-studio-ai/bkit-claude-code"
+      }
+    },
+    "thakicloud": {
+      "source": {
+        "source": "github",
+        "repo": "ThakiCloud/SUPERSKILLRET"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "oh-my-claudecode@omc": true,
+    "bkit@bkit-marketplace": true,
+    "superskillret@thakicloud": true
+  }
+}

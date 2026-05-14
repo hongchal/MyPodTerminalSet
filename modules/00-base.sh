@@ -6,7 +6,7 @@ apt update
 apt install -y --no-install-recommends \
   ca-certificates curl wget git build-essential \
   rsync unzip less openssh-client locales tzdata gnupg \
-  vim nano
+  vim nano jq
 
 # vim-tiny가 이미 깔려 있으면 제거 (정상 vim에 자리 양보)
 if dpkg -l vim-tiny >/dev/null 2>&1; then
