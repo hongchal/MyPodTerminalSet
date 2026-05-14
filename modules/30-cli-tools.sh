@@ -4,7 +4,22 @@ export DEBIAN_FRONTEND=noninteractive
 
 apt install -y --no-install-recommends \
   tmux ripgrep bat fd-find htop ncdu tree jq \
-  bash-completion git-delta direnv less
+  bash-completion direnv less
+
+# git-delta — apt에 없을 수 있음(Jammy 22.04 등). 시도 후 실패하면 GitHub release.
+if ! command -v delta >/dev/null 2>&1; then
+  if apt install -y git-delta 2>/dev/null; then
+    echo "git-delta apt 설치 성공"
+  else
+    DV=$(curl -s "https://api.github.com/repos/dandavison/delta/releases/latest" \
+          | grep -Po '"tag_name": "\K[^"]*')
+    curl -fsSL "https://github.com/dandavison/delta/releases/download/${DV}/delta-${DV}-x86_64-unknown-linux-gnu.tar.gz" \
+      | tar xz -C /tmp
+    install "/tmp/delta-${DV}-x86_64-unknown-linux-gnu/delta" /usr/local/bin/
+    rm -rf "/tmp/delta-${DV}-x86_64-unknown-linux-gnu"
+    echo "git-delta v${DV} GitHub release 설치"
+  fi
+fi
 
 # bat/fd 이름 정규화 (Debian 패키지는 batcat/fdfind로 깔림)
 mkdir -p "${HOME}/.local/bin"
