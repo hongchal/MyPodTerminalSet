@@ -3,6 +3,7 @@
 ## Persistent storage
 - 모든 영구 데이터는 `/DATA1/hongcheol/` 아래
 - `~/.claude` → `/DATA1/hongcheol/.claude` symlink (25-claude-sync)
+- `~/.omc` → `/DATA1/hongcheol/.omc` symlink (27-omc-sync) — OMC 플러그인 project memory/sessions/state
 - secrets: `/DATA1/hongcheol/.secrets/*.env` (chmod 600)
 
 ## Pod

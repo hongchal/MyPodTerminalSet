@@ -48,6 +48,7 @@ tmux new -s work
 | `20-claude.sh` | `@anthropic-ai/claude-code` CLI |
 | `25-claude-sync.sh` | `~/.claude` ↔ `/DATA1/hongcheol/.claude` 안전 마이그레이션 + symlink |
 | `26-claude-plugins.sh` | `~/.claude/settings.json`에 마켓플레이스(omc, bkit, thakicloud) + 플러그인 enable + 권한/언어/env 선언. 첫 `claude` 실행 시 플러그인 자동 fetch |
+| `27-omc-sync.sh` | `~/.omc` ↔ `/DATA1/hongcheol/.omc` 안전 마이그레이션 + symlink (OMC 플러그인 project memory/sessions/state 영속) |
 | `28-mcp-servers.sh` | `config/mcp-servers.json` 매니페스트의 standalone MCP 서버 등록 (플러그인 번들 MCP는 26이 처리) |
 | `30-cli-tools.sh` | tmux, ripgrep, bat, fd, htop, ncdu, tree, gh, lazygit, delta, direnv (jq는 00-base에서) |
 | `55-claude-profile.sh` | `profile/{agents,commands,skills}/` → `~/.claude/{agents,commands,skills}/` symlink deploy (사용자 커스텀 보관) |
@@ -72,6 +73,7 @@ tmux new -s work
 ```
 /DATA1/hongcheol/
 ├── .claude/         ← Claude 설정/메모리/플러그인 (symlinked from ~/.claude)
+├── .omc/            ← OMC 플러그인 project memory/sessions/state (symlinked from ~/.omc)
 ├── .secrets/        ← API 키 평문 보관 (chmod 700/600)
 ├── .config/gh/      ← GitHub CLI 인증 (symlinked from ~/.config/gh)
 ├── .ssh-backup/     ← SSH 키 백업
