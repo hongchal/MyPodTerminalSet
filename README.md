@@ -54,7 +54,9 @@ tmux new -s work
 | `55-claude-profile.sh` | `profile/{agents,commands,skills}/` → `~/.claude/{agents,commands,skills}/` symlink deploy (사용자 커스텀 보관) |
 | `56-claude-vault.sh` | `vault/rules/*.md` → `~/.claude/CLAUDE.user.md` 빌드. OMC의 글로벌 CLAUDE.md와 분리 |
 | `35-fzf.sh` | fzf (git 설치, 최신 버전) |
-| `40-python.sh` | uv, nvitop, ipython |
+| `40-python.sh` | uv, nvitop, ipython, hf_transfer |
+| `41-ml-stack.sh` | 공통 ML/LLM 인프라 — transformers/accelerate/datasets, vLLM, lm-evaluation-harness (editable from NFS clone) + IFEval extras, nltk data → NFS |
+| `42-quant-tools.sh` | 양자화 전용 — nvidia-modelopt 0.43 (NVFP4/INT PTQ) |
 | `50-bash.sh` | `~/.bashrc` 추가 (history, alias, prompt with git, fzf) |
 | `60-tmux.sh` | `~/.tmux.conf` (prefix=Ctrl+a, mouse on, vim nav, 상태바) |
 | `70-secrets.sh` | `/DATA1/hongcheol/.secrets/` 템플릿 생성 (평문, chmod 600) |
@@ -74,6 +76,8 @@ tmux new -s work
 /DATA1/hongcheol/
 ├── .claude/         ← Claude 설정/메모리/플러그인 (symlinked from ~/.claude)
 ├── .omc/            ← OMC 플러그인 project memory/sessions/state (symlinked from ~/.omc)
+├── quantization/    ← 양자화 작업 트리 (per-model dirs + lm-evaluation-harness 클론)
+├── nltk_data/       ← NLTK 코퍼스 (punkt/punkt_tab, IFEval에 필요)
 ├── .secrets/        ← API 키 평문 보관 (chmod 700/600)
 ├── .config/gh/      ← GitHub CLI 인증 (symlinked from ~/.config/gh)
 ├── .ssh-backup/     ← SSH 키 백업
