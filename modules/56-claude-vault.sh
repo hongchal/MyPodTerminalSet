@@ -9,19 +9,15 @@ BUILD="${REPO_DIR}/vault/scripts/build.sh"
 
 REPO_DIR="${REPO_DIR}" bash "${BUILD}"
 
-# OMC가 CLAUDE.md를 관리하므로, @CLAUDE.user.md 참조 자동 추가는 하지 않음.
-# 사용자가 처음 한 번 ~/.claude/CLAUDE.md 끝에 다음 한 줄 추가:
-#   @CLAUDE.user.md
-# 그 이후로는 부트스트랩이 알아서 build만 함.
-
+# Claude Code auto-loads ~/.claude/CLAUDE.md (not CLAUDE.user.md), so we
+# ensure CLAUDE.md exists and imports vault rules via `@CLAUDE.user.md`.
+# The import line coexists safely with any other content (e.g. OMC additions).
 GLOBAL="${HOME}/.claude/CLAUDE.md"
-USER_FILE="${HOME}/.claude/CLAUDE.user.md"
-if [[ -f "${GLOBAL}" ]] && ! grep -qF '@CLAUDE.user.md' "${GLOBAL}"; then
-  cat << EOF
-
-[vault] tip: vault 룰을 글로벌 CLAUDE.md에 포함시키려면 ~/.claude/CLAUDE.md 끝에 한 줄 추가:
-  @CLAUDE.user.md
-
-또는 zero-config로 가려면 CLAUDE.user.md를 프로젝트별로 따로 reference.
-EOF
+mkdir -p "$(dirname "${GLOBAL}")"
+if [[ ! -f "${GLOBAL}" ]]; then
+  echo "@CLAUDE.user.md" > "${GLOBAL}"
+  echo "[vault] created ${GLOBAL} with @CLAUDE.user.md import"
+elif ! grep -qF '@CLAUDE.user.md' "${GLOBAL}"; then
+  printf '\n@CLAUDE.user.md\n' >> "${GLOBAL}"
+  echo "[vault] appended @CLAUDE.user.md import to ${GLOBAL}"
 fi
