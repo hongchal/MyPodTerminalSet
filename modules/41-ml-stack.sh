@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Common ML / LLM tooling — inference, fine-tuning, evaluation.
-# Not quantization-specific. Used by any LLM workflow on this pod.
+# Targets python3.12 (installed by 40-python.sh). Not quantization-specific.
 #
 # - transformers / accelerate / datasets / huggingface_hub (+ hf_transfer)
 # - vLLM                  (high-throughput inference backend)
@@ -20,9 +20,10 @@ log()  { printf '\033[1;36m[ml-stack]\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m[ml-stack]\033[0m %s\n' "$*"; }
 die()  { printf '\033[1;31m[ml-stack error]\033[0m %s\n' "$*" >&2; exit 1; }
 
-command -v python3 >/dev/null 2>&1 || die "python3 not found"
+command -v python3.12 >/dev/null 2>&1 || die "python3.12 not found — run 40-python.sh first"
 
-PIP=(pip install --break-system-packages -U --no-input)
+PY=python3.12
+PIP=("${PY}" -m pip install -U --no-input)
 
 log "core HF + accel stack"
 "${PIP[@]}" \
@@ -45,12 +46,12 @@ if [[ ! -d "${LM_EVAL_DIR}/.git" ]]; then
   git clone https://github.com/EleutherAI/lm-evaluation-harness.git "${LM_EVAL_DIR}"
 fi
 log "editable install: ${LM_EVAL_DIR}"
-pip install --break-system-packages -e "${LM_EVAL_DIR}"
+"${PY}" -m pip install -e "${LM_EVAL_DIR}"
 
 # nltk data → NFS-persistent (NLTK_DATA env var is set in bashrc.snippet)
 mkdir -p "${NLTK_DIR}"
 log "nltk data dir: ${NLTK_DIR}"
-NLTK_DATA="${NLTK_DIR}" python3 - <<PY 2>&1 | tail -5 || warn "nltk download failed"
+NLTK_DATA="${NLTK_DIR}" "${PY}" - <<PY 2>&1 | tail -5 || warn "nltk download failed"
 import nltk, os
 for pkg in ("punkt", "punkt_tab"):
     nltk.download(pkg, download_dir=os.environ["NLTK_DATA"], quiet=False)

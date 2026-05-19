@@ -54,9 +54,9 @@ tmux new -s work
 | `55-claude-profile.sh` | `profile/{agents,commands,skills}/` → `~/.claude/{agents,commands,skills}/` symlink deploy (사용자 커스텀 보관) |
 | `56-claude-vault.sh` | `vault/rules/*.md` → `~/.claude/CLAUDE.user.md` 빌드. OMC의 글로벌 CLAUDE.md와 분리 |
 | `35-fzf.sh` | fzf (git 설치, 최신 버전) |
-| `40-python.sh` | uv, nvitop, ipython, hf_transfer |
-| `41-ml-stack.sh` | 공통 ML/LLM 인프라 — transformers/accelerate/datasets, vLLM, lm-evaluation-harness (editable from NFS clone) + IFEval extras, nltk data → NFS |
-| `42-quant-tools.sh` | 양자화 전용 — nvidia-modelopt 0.43 (NVFP4/INT PTQ) |
+| `40-python.sh` | python3.12 (deadsnakes PPA) + `python` alt, uv, nvitop, ipython, hf_transfer |
+| `41-ml-stack.sh` | 공통 ML/LLM 인프라 (→ python3.12) — transformers/accelerate/datasets, vLLM, lm-evaluation-harness (editable from NFS clone) + IFEval extras, nltk data → NFS |
+| `42-quant-tools.sh` | 양자화 전용 (→ python3.12) — nvidia-modelopt 0.43 (NVFP4/INT PTQ) |
 | `50-bash.sh` | `~/.bashrc` 추가 (history, alias, prompt with git, fzf) |
 | `60-tmux.sh` | `~/.tmux.conf` (prefix=Ctrl+a, mouse on, vim nav, 상태바) |
 | `70-secrets.sh` | `/DATA1/hongcheol/.secrets/` 템플릿 생성 (평문, chmod 600) |
