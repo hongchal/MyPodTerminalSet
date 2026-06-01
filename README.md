@@ -55,8 +55,9 @@ tmux new -s work
 | `56-claude-vault.sh` | `vault/rules/*.md` → `~/.claude/CLAUDE.user.md` 빌드. OMC의 글로벌 CLAUDE.md와 분리 |
 | `35-fzf.sh` | fzf (git 설치, 최신 버전) |
 | `40-python.sh` | python3.12 (deadsnakes PPA) + `python` alt, uv, nvitop, ipython, hf_transfer |
-| `41-ml-stack.sh` | 공통 ML/LLM 인프라 (→ python3.12) — transformers/accelerate/datasets, vLLM, lm-evaluation-harness (editable from NFS clone) + IFEval extras, nltk data → NFS |
-| `42-quant-tools.sh` | 양자화 전용 (→ python3.12) — nvidia-modelopt 0.43 (NVFP4/INT PTQ) |
+| `41-ml-stack.sh` | 공통 ML/LLM 인프라 **CPU-safe** (→ python3.12) — torch(CPU wheel), transformers/accelerate/datasets, lm-evaluation-harness (editable from NFS clone) + IFEval extras, nltk data → NFS |
+| `43-gpu-vllm.sh` | **GPU 전용** 추론 백엔드 (→ python3.12) — vLLM. `nvidia-smi` 없으면 skip, 있으면 CUDA torch로 교체 |
+| `44-gpu-quant.sh` | **GPU 전용** 양자화 (→ python3.12) — nvidia-modelopt 0.43 (NVFP4/INT PTQ). `nvidia-smi` 없으면 skip |
 | `50-bash.sh` | `~/.bashrc` 추가 (history, alias, prompt with git, fzf) |
 | `60-tmux.sh` | `~/.tmux.conf` (prefix=Ctrl+a, mouse on, vim nav, 상태바) |
 | `70-secrets.sh` | `/DATA1/hongcheol/.secrets/` 템플릿 생성 (평문, chmod 600) |

@@ -1,15 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Common ML / LLM tooling — inference, fine-tuning, evaluation.
+# Common ML / LLM tooling — CPU-safe baseline for ALL machines.
 # Targets python3.12 (installed by 40-python.sh). Not quantization-specific.
 #
+# - torch                 (CPU wheel — keeps CPU-only pods from pulling CUDA)
 # - transformers / accelerate / datasets / huggingface_hub (+ hf_transfer)
-# - vLLM                  (high-throughput inference backend)
 # - lm-evaluation-harness (editable install from NFS clone) + IFEval task extras
 # - nltk data (punkt, punkt_tab) into NFS-persistent NLTK_DATA dir
 #
-# For quantization-specific deps (nvidia-modelopt) see 42-quant-tools.sh.
+# GPU-only backends are split out and gated on nvidia-smi:
+#   - vLLM            → 43-gpu-vllm.sh
+#   - nvidia-modelopt → 44-gpu-quant.sh
+# On GPU pods, 43 upgrades the CPU torch installed here to the matching CUDA build.
 
 PERSIST_ROOT="${CLAUDE_PERSIST_ROOT:-/DATA1/hongcheol}"
 QUANT_ROOT="${PERSIST_ROOT}/quantization"
@@ -25,6 +28,12 @@ command -v python3.12 >/dev/null 2>&1 || die "python3.12 not found — run 40-py
 PY=python3.12
 PIP=("${PY}" -m pip install -U --no-input)
 
+# torch CPU wheel first — without this, transformers pulls the default CUDA
+# torch (+nvidia-* libs, multiple GB) even on CPU-only pods. On GPU pods,
+# 43-gpu-vllm.sh replaces this with the matching CUDA build.
+log "torch (CPU wheel)"
+"${PIP[@]}" --index-url https://download.pytorch.org/whl/cpu "torch"
+
 log "core HF + accel stack"
 "${PIP[@]}" \
   "transformers>=4.57" \
@@ -32,9 +41,6 @@ log "core HF + accel stack"
   "datasets>=3.0" \
   "huggingface_hub>=0.27" \
   "hf_transfer"
-
-log "vLLM (inference backend)"
-"${PIP[@]}" "vllm>=0.18" || warn "vllm install failed — workflows depending on vllm will need fallback"
 
 log "IFEval task extras (langdetect, immutabledict, nltk)"
 "${PIP[@]}" "langdetect" "immutabledict" "nltk>=3.9.1"
