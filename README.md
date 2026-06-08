@@ -54,6 +54,7 @@ tmux new -s work
 | `55-claude-profile.sh` | `profile/{agents,commands,skills}/` → `~/.claude/{agents,commands,skills}/` symlink deploy (사용자 커스텀 보관) |
 | `56-claude-vault.sh` | `vault/rules/*.md` → `~/.claude/CLAUDE.user.md` 빌드. OMC의 글로벌 CLAUDE.md와 분리 |
 | `35-fzf.sh` | fzf (git 설치, 최신 버전) |
+| `36-k9s.sh` | k9s (Kubernetes TUI, GitHub release 바이너리 → `/usr/local/bin`) |
 | `40-python.sh` | python3.12 (deadsnakes PPA) + `python` alt, uv, nvitop, ipython, hf_transfer |
 | `41-ml-stack.sh` | 공통 ML/LLM 인프라 **CPU-safe** (→ python3.12) — torch(CPU wheel), transformers/accelerate/datasets, lm-evaluation-harness (editable from NFS clone) + IFEval extras, nltk data → NFS |
 | `43-gpu-vllm.sh` | **GPU 전용** 추론 백엔드 (→ python3.12) — vLLM. `nvidia-smi` 없으면 skip, 있으면 CUDA torch로 교체 |
