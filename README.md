@@ -45,7 +45,7 @@ tmux new -s work
 |------|-----------|
 | `00-base.sh` | apt essentials (curl, git, build-essential, rsync) |
 | `10-node.sh` | Node.js 20 (NodeSource) |
-| `20-claude.sh` | `@anthropic-ai/claude-code` CLI |
+| `20-claude.sh` | `@anthropic-ai/claude-code` CLI (2.x native binary; egress 막힌 pod는 플랫폼 패키지 직접 받아 `/usr/local/bin/claude` symlink로 자가복구) |
 | `25-claude-sync.sh` | `~/.claude` ↔ `/DATA1/hongcheol/.claude` 안전 마이그레이션 + symlink |
 | `26-claude-plugins.sh` | `~/.claude/settings.json`에 마켓플레이스(omc, bkit, thakicloud) + 플러그인 enable + 권한/언어/env 선언. 첫 `claude` 실행 시 플러그인 자동 fetch |
 | `27-omc-sync.sh` | `~/.omc` ↔ `/DATA1/hongcheol/.omc` 안전 마이그레이션 + symlink (OMC 플러그인 project memory/sessions/state 영속) |
