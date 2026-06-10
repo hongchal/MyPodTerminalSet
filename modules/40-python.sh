@@ -76,6 +76,16 @@ fi
 
 PY312_BIN="$(command -v python3.12)"
 
+# uv-managed CPython ships a PEP 668 EXTERNALLY-MANAGED marker that blocks
+# `pip install`. We use python3.12 as the primary interpreter for the ML stack
+# (downstream modules run `python3.12 -m pip install ...`), so drop the marker
+# to make it behave like a normal pip-managed python. No-op on a deadsnakes
+# system python (no marker), and idempotent across re-runs.
+EM="$("${PY312_BIN}" -c 'import sysconfig,os;print(os.path.join(sysconfig.get_path("stdlib"),"EXTERNALLY-MANAGED"))' 2>/dev/null || true)"
+if [ -n "${EM}" ] && [ -f "${EM}" ]; then
+  rm -f "${EM}" && warn "removed EXTERNALLY-MANAGED marker (uv-managed python) to allow pip"
+fi
+
 # 2. pip into python3.12 (uv-managed builds already bundle pip)
 if ! python3.12 -m pip --version >/dev/null 2>&1; then
   log "bootstrapping pip into python3.12 (ensurepip)"
