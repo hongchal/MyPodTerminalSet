@@ -55,7 +55,7 @@ tmux new -s work
 | `56-claude-vault.sh` | `vault/rules/*.md` → `~/.claude/CLAUDE.user.md` 빌드. OMC의 글로벌 CLAUDE.md와 분리 |
 | `35-fzf.sh` | fzf (git 설치, 최신 버전) |
 | `36-k9s.sh` | k9s (Kubernetes TUI, GitHub release 바이너리 → `/usr/local/bin`) |
-| `40-python.sh` | python3.12 (deadsnakes PPA) + `python` alt, uv, nvitop, ipython, hf_transfer |
+| `40-python.sh` | python3.12 (deadsnakes PPA, launchpad 막힌 pod는 uv-managed CPython으로 폴백; `PY_SKIP_DEADSNAKES=1`로 PPA 건너뜀) + `python` alt, uv, nvitop, ipython, hf_transfer |
 | `41-ml-stack.sh` | 공통 ML/LLM 인프라 **CPU-safe** (→ python3.12) — torch(CPU wheel), transformers/accelerate/datasets, lm-evaluation-harness (editable from NFS clone) + IFEval extras, nltk data → NFS |
 | `43-gpu-vllm.sh` | **GPU 전용** 추론 백엔드 (→ python3.12) — vLLM. `nvidia-smi` 없으면 skip, 있으면 CUDA torch로 교체 |
 | `44-gpu-quant.sh` | **GPU 전용** 양자화 (→ python3.12) — nvidia-modelopt 0.43 (NVFP4/INT PTQ). `nvidia-smi` 없으면 skip |
