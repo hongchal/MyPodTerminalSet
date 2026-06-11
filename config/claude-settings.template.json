@@ -36,7 +36,7 @@
     "ENABLE_PROMPT_CACHING_1H": "1"
   },
   "language": "Korean",
-  "advisorModel": "opus",
+  "advisorModel": "fable",
   "includeGitInstructions": false,
   "autoMemoryEnabled": false,
   "autoCompactEnabled": false,
