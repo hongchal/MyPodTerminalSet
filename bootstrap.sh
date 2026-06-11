@@ -6,6 +6,12 @@ MODULES_DIR="${REPO_DIR}/modules"
 MARKER="${HOME}/.pod_bootstrap_done"
 export REPO_DIR
 
+# Shared cache env (pip/HF/nltk on /DATA1). Exported here so every module — each
+# run as a separate `bash module.sh` — inherits it and writes its downloads to
+# persistent storage instead of the ephemeral pod fs.
+# shellcheck source=config/env.sh
+[ -f "${REPO_DIR}/config/env.sh" ] && source "${REPO_DIR}/config/env.sh"
+
 log()  { printf '\033[1;32m[bootstrap]\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m[warn]\033[0m %s\n' "$*"; }
 err()  { printf '\033[1;31m[error]\033[0m %s\n' "$*" >&2; }
