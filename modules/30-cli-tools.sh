@@ -64,12 +64,16 @@ cli_latest_tag() { # $1=repo
     | grep -Po '"tag_name": "\K[^"]*' | head -1
 }
 
-# Extract a version via temp file (dodges set -u / pipefail SIGPIPE quirks).
+# Extract a version via temp file. Collects all matches then keeps the first via
+# bash parameter expansion (no pipe to head): `grep -m1` only limits matching
+# *lines*, and tools like lazygit print two `version=` matches on one line; a
+# `grep | head` pipe would also risk a SIGPIPE-empty under `set -o pipefail`.
 extract_version() { # $1=bin $2=PCRE
-  local t; t="$(mktemp)"
+  local t all; t="$(mktemp)"
   "$1" --version >"$t" 2>&1 || true
-  grep -oP "$2" "$t" | head -1
+  all="$(grep -oP "$2" "$t" 2>/dev/null || true)"
   rm -f "$t"
+  printf '%s' "${all%%$'\n'*}"
 }
 
 # --- git-delta ------------------------------------------------------------
