@@ -28,11 +28,24 @@ command -v python3.12 >/dev/null 2>&1 || die "python3.12 not found — run 40-py
 PY=python3.12
 PIP=("${PY}" -m pip install -U --no-input)
 
+# Network resilience for large wheels on flaky pod egress. The torch CPU wheel
+# is ~192MB and the transformers stack is also non-trivial; on a slow/resetting
+# link pip's default resume budget (6 attempts) gets exhausted mid-download and
+# aborts the whole module (-> bootstrap exit 1, skipping 43-99). Bump resume +
+# connection retries and timeout for every pip call in this module.
+export PIP_RESUME_RETRIES=50 PIP_RETRIES=10 PIP_DEFAULT_TIMEOUT=120
+
 # torch CPU wheel first — without this, transformers pulls the default CUDA
 # torch (+nvidia-* libs, multiple GB) even on CPU-only pods. On GPU pods,
 # 43-gpu-vllm.sh replaces this with the matching CUDA build.
+# Outer retry loop on top of --resume-retries: if pip exhausts its resume
+# budget and exits, restart the install (it resumes from the partial cache).
 log "torch (CPU wheel)"
-"${PIP[@]}" --index-url https://download.pytorch.org/whl/cpu "torch"
+for _i in 1 2 3; do
+  "${PIP[@]}" --index-url https://download.pytorch.org/whl/cpu "torch" && break
+  warn "torch install failed (attempt ${_i}/3) — retrying"; sleep 5
+done
+"${PY}" -c "import torch" 2>/dev/null || die "torch install failed after retries (network?)"
 
 log "core HF + accel stack"
 "${PIP[@]}" \
