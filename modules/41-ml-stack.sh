@@ -49,7 +49,13 @@ log "IFEval task extras (langdetect, immutabledict, nltk)"
 mkdir -p "${QUANT_ROOT}"
 if [[ ! -d "${LM_EVAL_DIR}/.git" ]]; then
   log "cloning lm-evaluation-harness into ${LM_EVAL_DIR}"
-  git clone https://github.com/EleutherAI/lm-evaluation-harness.git "${LM_EVAL_DIR}"
+  # Retry: a single timed-out clone on slow egress would abort the chain.
+  for _i in 1 2 3; do
+    rm -rf "${LM_EVAL_DIR}"
+    git clone https://github.com/EleutherAI/lm-evaluation-harness.git "${LM_EVAL_DIR}" && break
+    warn "lm-eval clone failed (attempt ${_i}/3) — retrying"; sleep 3
+  done
+  [[ -d "${LM_EVAL_DIR}/.git" ]] || { warn "lm-eval clone failed — aborting module"; exit 1; }
 fi
 log "editable install: ${LM_EVAL_DIR}"
 "${PY}" -m pip install -e "${LM_EVAL_DIR}"
