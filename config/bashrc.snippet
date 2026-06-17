@@ -77,6 +77,29 @@ fi
 # ── fzf ─────────────────────────────────────────────────
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
+# ── Claude Code self-repair (slow-egress pods) ───────────
+# claude's auto-updater swaps in the small wrapper before the ~238MB native
+# binary finishes downloading; a shell opened in that window sees a placeholder
+# `claude.exe` (<100MB) and `claude` fails. If a known-good native binary is
+# cached on /DATA1, restore it instantly (zero download). This lets auto-update
+# stay ON (no version pin) while new terminals never hit the broken window.
+# Cheap: a couple of stat calls; only does work when actually broken.
+_mts_claude_heal() {
+  local w c cache=/DATA1/hongcheol/.cache/claude-native
+  for w in /usr/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe \
+           /usr/local/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe; do
+    [ -f "$w" ] || continue
+    [ "$(stat -c%s "$w" 2>/dev/null || echo 0)" -ge 104857600 ] && return 0
+    c="$(ls -1v "$cache" 2>/dev/null | tail -1)"
+    [ -n "$c" ] || return 0
+    cp "$cache/$c" "$w" 2>/dev/null && chmod +x "$w" 2>/dev/null \
+      && echo "[mts] restored claude native binary from cache ($c)"
+    return 0
+  done
+}
+_mts_claude_heal
+unset -f _mts_claude_heal 2>/dev/null
+
 # ── ML / Quantization (shared cache env on /DATA1) ───────
 # pip wheels, HF models, nltk data + HF_HUB_ENABLE_HF_TRANSFER. Single source of
 # truth shared with the install run (bootstrap.sh sources the same file).

@@ -90,10 +90,20 @@ newest_cached_version() {
     | sed -E 's/^claude-(.*)-linux-[^-]+(-musl)?$/\1/'
 }
 
+# A live claude memory-maps its binary from the global node_modules tree, so an
+# interrupted npm install leaves a non-empty `.claude-code-<hash>` backup dir
+# that makes every later install fail with ENOTEMPTY on the rename. Unlink those
+# staging leftovers first — safe even while claude runs, since Linux keeps the
+# inode alive for the running process until it exits.
+clean_staging() {
+  rm -rf "$(npm root -g)"/@anthropic-ai/.claude-code-* 2>/dev/null || true
+}
+
 # Install the wrapper at the given version (or latest) WITHOUT the doomed
 # network postinstall. Small + fast; just refreshes install.cjs + placeholder.
 install_wrapper() {
   local spec="$PKG${1:+@$1}"
+  clean_staging
   npm install -g "$spec" --ignore-scripts --omit=optional --no-fund --no-audit
 }
 
@@ -130,6 +140,7 @@ fi
 
 # --- 4. Cache miss: patient network fetch, then seed. ----------------------
 log "cache miss for ${v:-latest}; fetching native binary (~238MB, slow egress — patient)"
+clean_staging
 npm install -g "$PKG" --include=optional --foreground-scripts --no-fund --no-audit \
   --fetch-timeout=1800000 --fetch-retries=5 \
   --fetch-retry-mintimeout=20000 --fetch-retry-maxtimeout=600000 \
