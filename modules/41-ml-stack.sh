@@ -48,8 +48,13 @@ done
 "${PY}" -c "import torch" 2>/dev/null || die "torch install failed after retries (network?)"
 
 log "core HF + accel stack"
+# transformers floor is >=5.5.3: vLLM >=0.24 dropped Transformers v4 support and
+# hard-fails at import ("Support for Transformers v4 ... removed in vLLM v0.24.0")
+# if it finds v4. Keeping this floor below vLLM's requirement lets a pod drift
+# into a v4/vLLM-0.24 mismatch (transformers stuck at 4.x while vLLM upgrades),
+# which breaks every vLLM serve. Pin at vLLM 0.24's floor so the two stay in sync.
 "${PIP[@]}" \
-  "transformers>=4.57" \
+  "transformers>=5.5.3" \
   "accelerate>=1.13" \
   "datasets>=3.0" \
   "huggingface_hub>=0.27" \
